@@ -1,0 +1,12 @@
+<%- include('../partials/header') %>
+<div class="form-wrap"><div class="card app-card p-4"><h1 class="h3 fw-bold mb-3"><%= title %></h1>
+<% if(errors.length){ %><div class="alert alert-danger"><ul class="mb-0"><% errors.forEach(e=>{ %><li><%= e.msg %></li><% }) %></ul></div><% } %>
+<form method="POST" action="<%= action %>">
+<div class="mb-3"><label class="form-label">Session title</label><input class="form-control" name="title" required maxlength="160" value="<%= session.title || '' %>"></div>
+<div class="mb-3"><label class="form-label">Subject</label><select class="form-select" name="subject_id"><option value="">General study</option><% subjects.forEach(s=>{ %><option value="<%= s.id %>" <%= String(session.subject_id||'')===String(s.id)?'selected':'' %>><%= s.name %></option><% }) %></select></div>
+<div class="mb-3"><label class="form-label">Study date</label><input class="form-control" type="date" name="study_date" required value="<%= session.study_date ? String(session.study_date).slice(0,10) : '' %>"></div>
+<div class="row"><div class="col-md-6 mb-3"><label class="form-label">Start time</label><input class="form-control" type="time" name="start_time" required value="<%= session.start_time ? String(session.start_time).slice(0,5) : '' %>"></div><div class="col-md-6 mb-3"><label class="form-label">End time</label><input class="form-control" type="time" name="end_time" required value="<%= session.end_time ? String(session.end_time).slice(0,5) : '' %>"></div></div>
+<div class="mb-3"><label class="form-label">Notes</label><textarea class="form-control" name="notes" rows="3"><%= session.notes || '' %></textarea></div>
+<div class="d-flex gap-2"><button class="btn btn-primary">Save session</button><a class="btn btn-light" href="/study-sessions">Cancel</a></div>
+</form></div></div>
+<%- include('../partials/footer') %>

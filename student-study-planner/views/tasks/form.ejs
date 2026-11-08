@@ -1,0 +1,12 @@
+<%- include('../partials/header') %>
+<div class="form-wrap"><div class="card app-card p-4"><h1 class="h3 fw-bold mb-3"><%= title %></h1>
+<% if(errors.length){ %><div class="alert alert-danger"><ul class="mb-0"><% errors.forEach(e=>{ %><li><%= e.msg %></li><% }) %></ul></div><% } %>
+<form method="POST" action="<%= action %>">
+<div class="mb-3"><label class="form-label">Task title</label><input class="form-control" name="title" required maxlength="160" value="<%= task.title || '' %>"></div>
+<div class="mb-3"><label class="form-label">Subject</label><select class="form-select" name="subject_id"><option value="">No subject</option><% subjects.forEach(s=>{ %><option value="<%= s.id %>" <%= String(task.subject_id||'')===String(s.id)?'selected':'' %>><%= s.name %></option><% }) %></select></div>
+<div class="mb-3"><label class="form-label">Description</label><textarea class="form-control" name="description" rows="3"><%= task.description || '' %></textarea></div>
+<div class="mb-3"><label class="form-label">Due date</label><input class="form-control" type="date" name="due_date" value="<%= task.due_date ? String(task.due_date).slice(0,10) : '' %>"></div>
+<div class="row"><div class="col-md-6 mb-3"><label class="form-label">Priority</label><select class="form-select" name="priority"><% ['Low','Medium','High'].forEach(p=>{ %><option <%= (task.priority||'Medium')===p?'selected':'' %>><%= p %></option><% }) %></select></div><div class="col-md-6 mb-3"><label class="form-label">Status</label><select class="form-select" name="status"><% ['Pending','In Progress','Completed'].forEach(s=>{ %><option <%= (task.status||'Pending')===s?'selected':'' %>><%= s %></option><% }) %></select></div></div>
+<div class="d-flex gap-2"><button class="btn btn-primary">Save task</button><a class="btn btn-light" href="/tasks">Cancel</a></div>
+</form></div></div>
+<%- include('../partials/footer') %>
