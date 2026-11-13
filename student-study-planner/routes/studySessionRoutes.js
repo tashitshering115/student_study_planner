@@ -20,8 +20,8 @@ router.get('/new', asyncHandler(async (req,res) => res.render('sessions/form', {
 })));
 router.post('/', body('title').trim().isLength({min:2,max:160}).withMessage('Enter a session title.'),
   body('study_date').isISO8601().withMessage('Choose a valid date.'),
-  body('start_time').matches(/^([01]\\d|2[0-3]):[0-5]\\d$/).withMessage('Enter a valid start time.'),
-  body('end_time').matches(/^([01]\\d|2[0-3]):[0-5]\\d$/).withMessage('Enter a valid end time.'),
+  body('start_time').matches(/^([01]\d|2[0-3]):[0-5]\d$/).withMessage('Enter a valid start time.'),
+  body('end_time').matches(/^([01]\d|2[0-3]):[0-5]\d$/).withMessage('Enter a valid end time.'),
   asyncHandler(async (req,res) => {
     const errors=validationResult(req);
     const subjectList=await subjects(req.session.user.id);
@@ -51,8 +51,8 @@ router.get('/:id/edit', asyncHandler(async (req,res) => {
 }));
 router.put('/:id', body('title').trim().isLength({min:2,max:160}).withMessage('Enter a session title.'),
   body('study_date').isISO8601().withMessage('Choose a valid date.'),
-  body('start_time').matches(/^([01]\\d|2[0-3]):[0-5]\\d$/).withMessage('Enter a valid start time.'),
-  body('end_time').matches(/^([01]\\d|2[0-3]):[0-5]\\d$/).withMessage('Enter a valid end time.'),
+  body('start_time').matches(/^([01]\d|2[0-3]):[0-5]\d$/).withMessage('Enter a valid start time.'),
+  body('end_time').matches(/^([01]\d|2[0-3]):[0-5]\d$/).withMessage('Enter a valid end time.'),
   asyncHandler(async (req,res) => {
     const errors=validationResult(req), subjectList=await subjects(req.session.user.id), data={...req.body,id:req.params.id};
     if(!errors.isEmpty() || req.body.end_time<=req.body.start_time) {

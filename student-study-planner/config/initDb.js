@@ -1,3 +1,4 @@
+
 const pool = require('./db');
 
 async function initializeDatabase() {
@@ -47,10 +48,34 @@ async function initializeDatabase() {
       CHECK (end_time > start_time)
     );
 
-    CREATE INDEX IF NOT EXISTS idx_subjects_user ON subjects(user_id);
-    CREATE INDEX IF NOT EXISTS idx_tasks_user_due ON tasks(user_id, due_date);
-    CREATE INDEX IF NOT EXISTS idx_sessions_user_date ON study_sessions(user_id, study_date);
+    CREATE INDEX IF NOT EXISTS idx_subjects_user
+    ON subjects(user_id);
+
+    CREATE INDEX IF NOT EXISTS idx_tasks_user_due
+    ON tasks(user_id, due_date);
+
+    CREATE INDEX IF NOT EXISTS idx_sessions_user_date
+    ON study_sessions(user_id, study_date);
+
+    CREATE TABLE IF NOT EXISTS push_subscriptions (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      endpoint TEXT NOT NULL UNIQUE,
+      subscription JSONB NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_push_subscriptions_user
+    ON push_subscriptions(user_id);
+
+    CREATE TABLE IF NOT EXISTS task_reminder_log (
+      task_id INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+      reminder_date DATE NOT NULL,
+      sent_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      PRIMARY KEY (task_id, reminder_date)
+    );
   `;
+
   await pool.query(sql);
 }
 

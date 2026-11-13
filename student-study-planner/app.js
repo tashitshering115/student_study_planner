@@ -14,6 +14,8 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const subjectRoutes = require('./routes/subjectRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const studySessionRoutes = require('./routes/studySessionRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const { startDailyTaskReminderScheduler } = require('./services/dailyTaskReminders');
 
 const app = express();
 
@@ -45,6 +47,7 @@ app.use(session({
 
 app.use((req, res, next) => {
   res.locals.currentUser = req.session.user || null;
+  res.locals.vapidPublicKey = process.env.VAPID_PUBLIC_KEY || '';
   res.locals.currentPath = req.path;
   res.locals.flash = req.session.flash || null;
   delete req.session.flash;
@@ -56,6 +59,7 @@ app.use('/', dashboardRoutes);
 app.use('/subjects', subjectRoutes);
 app.use('/tasks', taskRoutes);
 app.use('/study-sessions', studySessionRoutes);
+app.use('/notifications', notificationRoutes);
 
 app.use((req, res) => {
   res.status(404).render('404', { title: 'Page not found' });
@@ -74,7 +78,10 @@ const PORT = process.env.PORT || 3000;
 
 initializeDatabase()
   .then(() => {
-    app.listen(PORT, () => console.log(`Student Study Planner running at http://localhost:${PORT}`));
+    app.listen(PORT, () => {
+      console.log(`Student Study Planner running at http://localhost:${PORT}`);
+      startDailyTaskReminderScheduler();
+    });
   })
   .catch(err => {
     console.error('Could not initialize the database:', err.message);
